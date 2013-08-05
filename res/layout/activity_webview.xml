@@ -1,0 +1,46 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:ottrss="http://schemas.android.com/apk/res/uk.co.minter.ottrss"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <uk.co.minter.ottrss.views.HeadlineView
+        android:id="@+id/headlineView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        ottrss:handle_fling="true" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/headlineView" >
+
+        <WebView
+            android:id="@+id/webView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <View
+            android:id="@+id/leftZone"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:alpha="0"
+            android:background="@drawable/left" />
+
+        <View
+            android:id="@+id/rightZone"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:alpha="0"
+            android:background="@drawable/right" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

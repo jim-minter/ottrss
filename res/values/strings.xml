@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">OTTRSS</string>
+    <string name="articles_to_sync">Articles to sync</string>
+    <string name="category_name">Category name</string>
+    <string name="debugging">Debugging</string>
+    <string name="dont_sync_local_state">Don\'t sync local state</string>
+    <string name="password">Password</string>
+    <string name="pick_sync_mode">Pick sync mode</string>
+    <string name="resetdb">Reset DB</string>
+    <string name="settings">Settings</string>
+    <string name="show_all">Show all</string>
+    <string name="sync">Sync</string>
+    <string name="sync_now">Sync now</string>
+    <string name="sync_period">Sync period</string>
+    <string name="ttrss">TTRSS</string>
+    <string name="api_url">API URL</string>
+    <string name="username">Username</string>
+    <string name="verify_https_certificate">Verify HTTPS certificate</string>
+    <string name="account_type">uk.co.minter.ottrss</string>
+    <string name="provider_name">uk.co.minter.ottrss.provider</string>
+
+    <string-array name="sync_mode">
+        <item>Sync content</item>
+        <item>Sync linked page</item>
+    </string-array>
+    <string-array name="sync_count">
+        <item>100 articles</item>
+        <item>200 articles</item>
+        <item>500 articles</item>
+        <item>1000 articles</item>
+        <item>2000 articles</item>
+    </string-array>
+    <string-array name="sync_count_values">
+        <item>100</item>
+        <item>200</item>
+        <item>500</item>
+        <item>1000</item>
+        <item>2000</item>
+    </string-array>
+    <string-array name="sync_period">
+        <item>Periodic sync disabled</item>
+        <item>1 hour</item>
+        <item>2 hours</item>
+        <item>6 hours</item>
+        <item>12 hours</item>
+        <item>24 hours</item>
+    </string-array>
+    <string-array name="sync_period_values">
+        <item>0</item>
+        <item>3600</item>
+        <item>7200</item>
+        <item>21600</item>
+        <item>43200</item>
+        <item>86400</item>
+    </string-array>
+
+</resources>

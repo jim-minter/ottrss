@@ -1,0 +1,33 @@
+Medium
+- Go back twice when no articles to display any more
+- Prevent multiple accounts being added (have auth.Activity use SettingsFragment)
+
+Low
+- Investigate OpenShift EOFException?
+
+Would like to have
+- Play videos (javascript etc.)
+- Mark all read button on articles view
+- Separate list of all starred / unread articles
+- Option to load article in browser
+- Cache linked pages
+- always sync @ 06:00am
+- use content provider rather than broadcast listeners
+- open article in browser option
+- smaller arrows
+
+- Activity updates when syncing
+  - handle article delete while in webview
+  - handle feed going away
+  - check through how many refreshes on update
+
+- Keep #favourites configurable & logic
+
+- Settings page
+  - select feeds (low priority) & set feed settings without having to happen to download the feed first
+  - add feed (low priority)
+
+Performance
+- Improve article list show performance (provider model, or at least multi-threaded)
+- Improve sync performance
+- Sync memory usage

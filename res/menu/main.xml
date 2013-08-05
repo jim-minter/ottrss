@@ -1,0 +1,21 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:onClick="sync"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/sync_now">
+    </item>
+    <item
+        android:onClick="resetDB"
+        android:orderInCategory="200"
+        android:showAsAction="never"
+        android:title="@string/resetdb">
+    </item>
+    <item
+        android:onClick="settings"
+        android:orderInCategory="300"
+        android:showAsAction="never"
+        android:title="@string/settings"/>
+
+</menu>
