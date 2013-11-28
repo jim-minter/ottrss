@@ -2,6 +2,8 @@ package uk.co.minter.ottrss.sync;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.Context;
@@ -11,11 +13,13 @@ import android.content.SyncResult;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -32,18 +36,25 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	private SharedPreferences sp;
 	private RSS rss;
 
+	private NotificationManager nm;
+	private Notification.Builder nb;
+
 	private long sync_start;
 
 	public SyncAdapter(Context context, boolean autoInitialize) {
 		super(context, autoInitialize);
 		this.context = context;
 		sp = PreferenceManager.getDefaultSharedPreferences(context);
+		nm = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
 	}
 
 	@Override
 	public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
 		try {
 			Log.i("Sync", "Starting");
+			nb = new Notification.Builder(context).setContentTitle("OTTRSS Sync").setContentText("Sync in progress").setSmallIcon(android.R.drawable.sym_def_app_icon).setOngoing(true);
+			nb.setProgress(1, 0, false);
+			nm.notify(0, nb.build());
 
 			init(account.name, AccountManager.get(context).getPassword(account));
 
@@ -58,6 +69,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			e.putLong("last_sync", System.currentTimeMillis());
 			e.commit();
 
+			nm.cancel(0);
 			Log.i("Sync", "Done");
 
 		} catch(Exception ex) {
@@ -65,7 +77,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		}
 
 		// TODO: refresh view
-		// TODO: progress updates
 	}
 
 	private void init(String username, String password) throws IOException, JSONException {
@@ -115,16 +126,32 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
 		BoundedThreadPoolExecutor btpe = new BoundedThreadPoolExecutor(THREADS);
 
-		for(Article a : rss.headlines(COUNT))
+		Collection<Article> articles = rss.headlines(COUNT);
+		int i = 0;
+		long last = 0;
+		for(Article a : articles) {
+			long now = System.currentTimeMillis();
+
 			if(!a.existsInDatabase())
 				btpe.execute(new Worker(a));
 			else
-				a.update();
+				a.update(false);
+
+			if(now - last > 1000) {
+				last = now;
+				nb.setProgress(articles.size(), i, false);
+				nm.notify(0, nb.build());
+				Article.broadcast(context);
+			}
+
+			i++;
+		}
 
 		btpe.shutdown();
 		btpe.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
 
 		Article.deleteOld(context, sync_start);
+		Article.broadcast(context);
 	}
 
 	class Worker implements Runnable {
@@ -137,7 +164,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		@Override
 		public void run() {
 			try {
-				ZipInputStream zis = rss.blob(article);
+				ZipInputStream zis = new ZipInputStream(new BufferedInputStream(rss.blob(article)));
 				ZipEntry ze;
 				while((ze = zis.getNextEntry()) != null) {
 					FileOutputStream o = new FileOutputStream(new File(article.getDir(), ze.getName()));
@@ -152,7 +179,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				}
 				zis.close();
 
-				article.insert();
+				article.insert(false);
 
 			} catch(Exception ex) {
 				Log.e("SyncAdapter.Worker.run", ex);

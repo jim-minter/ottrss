@@ -80,7 +80,7 @@ public class Article {
 	public void markRead() {
 		if(unread == UnreadState.UNREAD) {
 			unread = UnreadState.READ;
-			update();
+			update(true);
 		}
 	}
 
@@ -109,12 +109,12 @@ public class Article {
 		LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
 	}
 
-	private static void broadcast(Context context) {
+	public static void broadcast(Context context) {
 		Intent intent = new Intent("articles");
 		LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
 	}
 
-	public void insert() {
+	public void insert(boolean broadcast) {
 		ContentValues cv = new ContentValues();
 		cv.put("id", id);
 		cv.put("feed_id", feed_id);
@@ -127,12 +127,14 @@ public class Article {
 		cv.put("synctoken", System.currentTimeMillis());
 
 		App.db.insert("articles", null, cv);
-		broadcast();
+		if(broadcast)
+			broadcast();
 	}
 
-	public void update() {
+	public void update(boolean broadcast) {
 		App.db.execSQL("UPDATE articles SET marked = " + (marked ? 1 : 0) + ", unread = " + unread.ordinal() + ", synctoken = " + System.currentTimeMillis() + " WHERE id = " + id);
-		broadcast();
+		if(broadcast)
+			broadcast();
 	}
 
 	static boolean existsInDatabase(int id) {

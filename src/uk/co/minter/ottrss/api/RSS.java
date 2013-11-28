@@ -1,12 +1,11 @@
 package uk.co.minter.ottrss.api;
 
 import android.content.Context;
-import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.zip.ZipInputStream;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,12 +26,12 @@ public class RSS {
 	}
 
 	private JSONObject send(String op) throws IOException, JSONException {
-		return send(op, null);
+		String s = HTTPDownload.downloadString(new URL(url, op), null, verify, 0, auth);
+		return (JSONObject)new JSONTokener(s).nextValue();
 	}
 
-	private JSONObject send(String op, String data) throws IOException, JSONException {
-		String s = HTTPDownload.downloadString(new URL(url, op), data, verify, 0, auth);
-		return s.equals("") ? null : (JSONObject)new JSONTokener(s).nextValue();
+	private void sendNoReply(String op, String data) throws IOException, JSONException {
+		HTTPDownload.downloadString(new URL(url, op), data, verify, 0, auth);
 	}
 
 	public Collection<Feed> feeds() throws IOException, JSONException {
@@ -55,8 +54,8 @@ public class RSS {
 		return rv;
 	}
 
-	public ZipInputStream blob(Article article) throws IOException, JSONException {
-		return new ZipInputStream(new BufferedInputStream(HTTPDownload.download(new URL(url, "/posts/" + article.id + "/blob"), null, verify, 0, auth)));
+	public InputStream blob(Article article) throws IOException, JSONException {
+		return HTTPDownload.download(new URL(url, "/posts/" + article.id + "/blob"), null, verify, 0, auth);
 	}
 
 	public void update(Collection<Integer> unread, Collection<Integer> read, Collection<Integer> unmarked, Collection<Integer> marked) throws IOException, JSONException {
@@ -66,6 +65,6 @@ public class RSS {
 		o.put("unstarred", new JSONArray(unmarked));
 		o.put("starred", new JSONArray(marked));
 
-		send("/update", o.toString());
+		sendNoReply("/update", o.toString());
 	}
 }

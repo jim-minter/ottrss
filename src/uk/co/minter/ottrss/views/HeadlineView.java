@@ -89,13 +89,13 @@ public class HeadlineView extends RelativeLayout {
 
 	public void flingLeft() {
 		article.advanceUnreadState();
-		article.update();
+		article.update(true);
 		refresh();
 	}
 
 	public void flingRight() {
 		article.reverseUnreadState();
-		article.update();
+		article.update(true);
 		refresh();
 	}
 
@@ -103,7 +103,7 @@ public class HeadlineView extends RelativeLayout {
 		@Override
 		public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 			article.marked = cb.isChecked();
-			article.update();
+			article.update(true);
 		}
 	}
 

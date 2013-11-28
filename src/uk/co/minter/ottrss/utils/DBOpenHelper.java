@@ -12,6 +12,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
 	@Override
 	public void onConfigure(SQLiteDatabase db) {
 		db.setForeignKeyConstraintsEnabled(true);
+		db.enableWriteAheadLogging();
 	}
 
 	@Override
