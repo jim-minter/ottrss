@@ -18,7 +18,7 @@ import java.util.List;
 public class SettingsFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener {
 	private AccountManager am;
 	private SharedPreferences sp;
-	private EditTextPreference url, username, password, category;
+	private EditTextPreference url, username, password;
 	private ListPreference period, articles;
 
 	@Override
@@ -31,7 +31,6 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 		url = (EditTextPreference)findPreference("url");
 		username = (EditTextPreference)findPreference("username");
 		password = (EditTextPreference)findPreference("password");
-		category = (EditTextPreference)findPreference("category");
 		period = (ListPreference)findPreference("period");
 		articles = (ListPreference)findPreference("articles");
 
@@ -76,7 +75,6 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 		url.setSummary(url.getText());
 		username.setSummary(username.getText());
-		category.setSummary(category.getText());
 		period.setSummary(period.getEntry());
 		articles.setSummary(articles.getEntry());
 	}

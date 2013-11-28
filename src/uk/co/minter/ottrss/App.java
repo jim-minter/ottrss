@@ -12,7 +12,6 @@ public class App extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		System.setProperty("http.keepAlive", "false");
 		db = new DBOpenHelper(this).getWritableDatabase();
 
 		Log.init(new File(getExternalFilesDir(null), "log.txt"));

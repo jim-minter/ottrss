@@ -18,18 +18,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.Toast;
+import java.text.DateFormat;
+import java.util.Date;
 import uk.co.minter.ottrss.App;
 import uk.co.minter.ottrss.R;
 import uk.co.minter.ottrss.api.Article;
 import uk.co.minter.ottrss.api.Feed;
 
-public class FeedsActivity extends Activity implements OnItemClickListener, OnItemLongClickListener, OnCheckedChangeListener {
+public class FeedsActivity extends Activity implements OnItemClickListener, OnCheckedChangeListener {
 	private SharedPreferences sp;
 	private SimpleCursorAdapter adapter;
 	private Cursor c;
@@ -62,7 +64,6 @@ public class FeedsActivity extends Activity implements OnItemClickListener, OnIt
 		lv = (ListView)findViewById(R.id.listView);
 		lv.setAdapter(adapter);
 		lv.setOnItemClickListener(this);
-		lv.setOnItemLongClickListener(this);
 	}
 
 	@Override
@@ -119,6 +120,7 @@ public class FeedsActivity extends Activity implements OnItemClickListener, OnIt
 
 	public void resetDB(MenuItem menuitem) {
 		Article.deleteOld(this, System.currentTimeMillis());
+		Feed.deleteOld(this, System.currentTimeMillis());
 	}
 
 	public void sync(MenuItem menuitem) {
@@ -130,6 +132,12 @@ public class FeedsActivity extends Activity implements OnItemClickListener, OnIt
 			b.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
 			ContentResolver.requestSync(accounts[0], getString(R.string.provider_name), b);
 		}
+	}
+
+	public void lastSync(MenuItem menuitem) {
+		long lastSync = sp.getLong("last_sync", 0);
+		String s = "Last synced at " + DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(new Date(lastSync));
+		Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
 	}
 
 	@Override
@@ -144,13 +152,5 @@ public class FeedsActivity extends Activity implements OnItemClickListener, OnIt
 
 		i.putExtra("id", (int)id);
 		startActivity(i);
-	}
-
-	@Override
-	public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-		FeedSyncModeDialogFragment df = new FeedSyncModeDialogFragment();
-		df.f = new Feed((int)id);
-		df.show(getFragmentManager(), "FeedSyncModeDialogFragment");
-		return true;
 	}
 }

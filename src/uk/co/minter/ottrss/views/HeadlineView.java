@@ -82,7 +82,7 @@ public class HeadlineView extends RelativeLayout {
 		iv.setImageResource(article.unread == Article.UnreadState.READ ? R.drawable.bullet_white : article.unread == Article.UnreadState.UNREAD ? R.drawable.bullet_green : R.drawable.bullet_blue);
 		tv1.setText(article.title);
 		tv2.setText(article.author);
-		tv2.setMaxLines(article.author.equals("") ? 0 : 1);
+		tv2.setMaxLines(article.author == null ? 0 : 1);
 		tv3.setText(DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT).format(new Date(article.updated * 1000L)));
 		cb.setChecked(article.marked);
 	}

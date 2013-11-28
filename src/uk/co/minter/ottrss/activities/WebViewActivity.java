@@ -42,7 +42,7 @@ public class WebViewActivity extends Activity {
 
 		WebSettings ws = wv.getSettings();
 		ws.setDefaultTextEncodingName("UTF-8");
-		ws.setJavaScriptEnabled(true);
+		// ws.setJavaScriptEnabled(true);
 		ws.setBuiltInZoomControls(true);
 		ws.setDisplayZoomControls(false);
 

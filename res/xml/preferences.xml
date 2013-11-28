@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
-
     <PreferenceCategory android:title="@string/ttrss" >
         <EditTextPreference
             android:defaultValue=""
             android:inputType="textUri"
             android:key="url"
             android:title="@string/api_url" />
-
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="verify"
             android:title="@string/verify_https_certificate" />
-
         <EditTextPreference
             android:defaultValue=""
             android:inputType="text"
@@ -40,12 +37,6 @@
             android:entryValues="@array/sync_count_values"
             android:key="articles"
             android:title="@string/articles_to_sync" />
-
-        <EditTextPreference
-            android:defaultValue=""
-            android:inputType="text"
-            android:key="category"
-            android:title="@string/category_name" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/debugging" >
         <CheckBoxPreference
@@ -53,5 +44,4 @@
             android:key="dont_sync_local_state"
             android:title="@string/dont_sync_local_state" />
     </PreferenceCategory>
-
 </PreferenceScreen>

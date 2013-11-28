@@ -1,5 +1,6 @@
 package uk.co.minter.ottrss.utils;
 
+import android.util.Base64;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -13,7 +14,7 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSession;
 
 public class HTTPDownload {
-	private static InputStream download(URL url, String data, boolean verify, int timeout) throws IOException {
+	public static InputStream download(URL url, String data, boolean verify, int timeout, String auth) throws IOException {
 		final int MAX_REDIRECTS = 5;
 		int redirects = 0;
 		while(true) {
@@ -21,6 +22,11 @@ public class HTTPDownload {
 			c.setInstanceFollowRedirects(true);
 			c.setConnectTimeout(timeout);
 			c.setReadTimeout(timeout);
+
+			if(auth != null) {
+				auth = "Basic " + Base64.encodeToString(auth.getBytes(), Base64.NO_WRAP);
+				c.setRequestProperty("Authorization", auth);
+			}
 
 			if(c instanceof HttpsURLConnection && !verify)
 				((HttpsURLConnection)c).setHostnameVerifier(new HostnameVerifier() {
@@ -31,6 +37,7 @@ public class HTTPDownload {
 				});
 
 			if(data != null) {
+				c.setRequestProperty("Content-Type", "application/json");
 				c.setDoOutput(true);
 				c.setChunkedStreamingMode(0);
 				c.getOutputStream().write(data.getBytes());
@@ -47,8 +54,8 @@ public class HTTPDownload {
 		}
 	}
 
-	public static String downloadString(URL url, String data, boolean verify, int timeout) throws IOException {
-		InputStreamReader i = new InputStreamReader(download(url, data, verify, timeout));
+	public static String downloadString(URL url, String data, boolean verify, int timeout, String auth) throws IOException {
+		InputStreamReader i = new InputStreamReader(download(url, data, verify, timeout, auth));
 		StringWriter o = new StringWriter();
 
 		char[] buf = new char[4096];
@@ -63,7 +70,7 @@ public class HTTPDownload {
 	}
 
 	public static void downloadFile(URL url, String data, boolean verify, int timeout, File f) throws IOException {
-		InputStream i = download(url, data, verify, timeout);
+		InputStream i = download(url, data, verify, timeout, null);
 		FileOutputStream o = new FileOutputStream(f);
 
 		byte[] buf = new byte[4096];

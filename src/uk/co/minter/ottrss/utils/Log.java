@@ -13,45 +13,6 @@ import java.util.Date;
 public class Log {
 	private static FileWriter w = null;
 
-	@SuppressLint("SimpleDateFormat")
-	private static void write(String level, String s) {
-		if(w == null)
-			return;
-
-		try {
-			String date = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date());
-			w.write(date + " " + level + " " + s + "\n");
-			w.flush();
-		} catch(IOException e) {
-		}
-	}
-
-	public static void init(File f) {
-		close();
-
-		try {
-			w = new FileWriter(f, true);
-		} catch(IOException e) {
-		}
-
-		Thread.setDefaultUncaughtExceptionHandler(new UEH());
-	}
-
-	public static void i(String tag, String msg) {
-		android.util.Log.i(tag, msg);
-		write("INFO", tag + " " + msg);
-	}
-
-	public static void w(String tag, String msg) {
-		android.util.Log.w(tag, msg);
-		write("WARN", tag + " " + msg);
-	}
-
-	public static void exception(String msg) {
-		android.util.Log.e("EXCEPTION", msg);
-		write("EXCEPTION", msg);
-	}
-
 	public static void close() {
 		if(w != null) {
 			try {
@@ -65,12 +26,51 @@ public class Log {
 		Thread.setDefaultUncaughtExceptionHandler(null);
 	}
 
+	public static void init(File f) {
+		close();
+
+		try {
+			w = new FileWriter(f, true);
+		} catch(IOException e) {
+		}
+
+		Thread.setDefaultUncaughtExceptionHandler(new UEH());
+	}
+
+	@SuppressLint("SimpleDateFormat")
+	private static void write(String level, String tag, String msg) {
+		if(w == null)
+			return;
+
+		try {
+			String date = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date());
+			w.write(date + " " + level + " " + tag + " " + msg + "\n");
+			w.flush();
+		} catch(IOException e) {
+		}
+	}
+
+	public static void i(String tag, String msg) {
+		android.util.Log.i(tag, msg);
+		write("INFO", tag, msg);
+	}
+
+	public static void w(String tag, String msg) {
+		android.util.Log.w(tag, msg);
+		write("WARN", tag, msg);
+	}
+
+	public static void e(String tag, Throwable ex) {
+		android.util.Log.e(tag, "Exception:", ex);
+		StringWriter sw = new StringWriter();
+		ex.printStackTrace(new PrintWriter(sw));
+		write("ERROR", tag, sw.toString());
+	}
+
 	private static class UEH implements UncaughtExceptionHandler {
 		@Override
 		public void uncaughtException(Thread thread, Throwable ex) {
-			StringWriter sw = new StringWriter();
-			ex.printStackTrace(new PrintWriter(sw));
-			exception(sw.toString());
+			e("Log.UEH.uncaughtException", ex);
 			Runtime.getRuntime().exit(1);
 		}
 	}

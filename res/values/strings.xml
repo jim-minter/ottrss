@@ -7,7 +7,6 @@
     <string name="debugging">Debugging</string>
     <string name="dont_sync_local_state">Don\'t sync local state</string>
     <string name="password">Password</string>
-    <string name="pick_sync_mode">Pick sync mode</string>
     <string name="resetdb">Reset DB</string>
     <string name="settings">Settings</string>
     <string name="show_all">Show all</string>
@@ -20,11 +19,8 @@
     <string name="verify_https_certificate">Verify HTTPS certificate</string>
     <string name="account_type">uk.co.minter.ottrss</string>
     <string name="provider_name">uk.co.minter.ottrss.provider</string>
-
-    <string-array name="sync_mode">
-        <item>Sync content</item>
-        <item>Sync linked page</item>
-    </string-array>
+    <string name="last_sync">Last sync</string>
+    
     <string-array name="sync_count">
         <item>100 articles</item>
         <item>200 articles</item>

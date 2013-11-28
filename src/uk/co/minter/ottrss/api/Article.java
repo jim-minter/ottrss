@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.support.v4.content.LocalBroadcastManager;
 import java.io.File;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import uk.co.minter.ottrss.App;
@@ -34,13 +33,13 @@ public class Article {
 		this.context = context;
 
 		id = o.getInt("id");
-		feed_id = o.getInt("feed_id");
-		title = StringEscapeUtils.unescapeHtml4(o.getString("title"));
-		author = o.getString("author");
-		link = o.getString("link");
-		updated = o.getInt("updated");
-		marked = o.getBoolean("marked");
-		mergeUnreadState(o.getBoolean("unread") ? UnreadState.UNREAD : UnreadState.READ);
+		feed_id = o.getInt("feed");
+		title = o.isNull("title") ? null : o.getString("title");
+		author = o.isNull("author") ? null : o.getString("author");
+		link = o.isNull("link") ? null : o.getString("link");
+		updated = (int)o.getLong("date");
+		marked = o.getInt("starred") == 1;
+		mergeUnreadState(o.getInt("unread") == 1 ? UnreadState.UNREAD : UnreadState.READ);
 	}
 
 	void mergeUnreadState(UnreadState remote) {
