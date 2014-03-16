@@ -19,6 +19,8 @@ public class RSS {
 	private String auth;
 	public boolean verify = true;
 
+	private long cookie = 0;
+
 	public RSS(Context context, URL url, String user, String password) {
 		this.context = context;
 		this.url = url;
@@ -45,7 +47,10 @@ public class RSS {
 	}
 
 	public Collection<Article> headlines(int limit) throws IOException, JSONException {
-		JSONArray a = send("/headlines/" + limit).getJSONArray("headlines");
+		JSONObject o = send("/headlines/" + limit);
+
+		cookie = o.getLong("cookie");
+		JSONArray a = o.getJSONArray("headlines");
 
 		LinkedList<Article> rv = new LinkedList<Article>();
 		for(int i = 0; i < a.length(); i++)
@@ -66,5 +71,9 @@ public class RSS {
 		o.put("starred", new JSONArray(marked));
 
 		sendNoReply("/update", o.toString());
+	}
+
+	public void clean() throws IOException, JSONException {
+		sendNoReply("/clean/" + cookie, "{}");
 	}
 }

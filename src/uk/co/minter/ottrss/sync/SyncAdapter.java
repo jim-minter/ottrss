@@ -65,6 +65,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
 			readArticles();
 
+			rss.clean();
+
 			Editor e = sp.edit();
 			e.putLong("last_sync", System.currentTimeMillis());
 			e.commit();
